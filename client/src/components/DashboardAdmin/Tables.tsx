@@ -3,6 +3,7 @@ import { FaTrash } from "react-icons/fa6";
 import { QRCodeSVG } from "qrcode.react";
 import html2canvas from "html2canvas";
 import { FaDownload } from "react-icons/fa";
+import { urlClient } from "../../config/axiosConfig";
 
 export const Tables = () => {
   const [tables, setTables] = useState(
@@ -32,6 +33,8 @@ export const Tables = () => {
       link.click();
     });
   };
+
+  const encodeBase64 = (num: number) => btoa(num.toString());
 
   return (
     <div className="bg-white p-4 rounded shadow-md">
@@ -71,7 +74,10 @@ export const Tables = () => {
                     className="flex flex-col items-center gap-2 justify-center w-32 h-32 rounded"
                   >
                     <span>Mesa {table.id}</span>
-                    <QRCodeSVG value={`${table.id}`} size={64} />
+                    <QRCodeSVG
+                      value={`${urlClient}/${encodeBase64(table.id)}`}
+                      size={64}
+                    />
                   </div>
                   <FaDownload
                     className="h-4 w-4 text-blue-500 hover:text-blue-700 cursor-pointer"

@@ -5,7 +5,7 @@ import { Configuration } from "./DashboardAdmin/Configuration";
 import { Tables } from "./DashboardAdmin/Tables";
 import { SongsQueue } from "./DashboardAdmin/SongsQueue";
 
-export default function Component() {
+export default function Dashboard() {
   const [activeTab, setActiveTab] = useState<TabNames>(TabNames.CONFIGURATION);
 
   return (

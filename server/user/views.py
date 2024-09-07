@@ -3,6 +3,11 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import User
 from table.models import Table
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework import status
 
 @csrf_exempt
 def create(request):
@@ -86,4 +91,12 @@ def delete(request, id):
             return JsonResponse({'error': 'User not found'}, status=404)
     else:
         return JsonResponse({'error': 'Only DELETE method allowed'}, status=405)
+    
+@api_view(['GET'])
+def verify_token(request):
+    print(request.user)
+    if request.user and request.user.is_authenticated:
+        return Response({"message": "Token is valid"}, status=status.HTTP_200_OK)
+    else:
+        return Response({"message": "Invalid token"}, status=status.HTTP_401_UNAUTHORIZED)
     
