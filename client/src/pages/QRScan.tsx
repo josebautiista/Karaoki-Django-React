@@ -64,13 +64,21 @@ export const QRScan = () => {
     }
   }, [qrOn]);
 
+  const extractParamFromUrl = (url: string): string => {
+    const parts = url.split("/");
+    return parts[parts.length - 1];
+  };
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       QrScanner.scanImage(file)
         .then((result) => {
           setScannedResult(result);
-          setIdMesa(Number(result));
+          const params = extractParamFromUrl(result);
+          const id = atob(params);
+          console.log("id", id);
+          setIdMesa(Number(id));
           navigate("/loginUser");
         })
         .catch((err) => console.log(err));
