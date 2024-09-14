@@ -19,7 +19,6 @@ export const LoginUser: React.FC = () => {
   };
 
   const registerUser = () => {
-    localStorage.setItem("name", name);
     navigate("/songs");
     try {
       api

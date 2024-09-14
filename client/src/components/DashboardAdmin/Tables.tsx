@@ -75,7 +75,7 @@ export const Tables = () => {
                   >
                     <span>Mesa {table.id}</span>
                     <QRCodeSVG
-                      value={`${urlClient}/${encodeBase64(table.id)}`}
+                      value={`${urlClient}${encodeBase64(table.id)}`}
                       size={64}
                     />
                   </div>

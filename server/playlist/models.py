@@ -10,6 +10,7 @@ class Playlist(models.Model):
     is_table_specific = models.BooleanField()
     table_id = models.ForeignKey(Table, on_delete=models.CASCADE, null=True)
     empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, null=True)
+    fecha_creacion = models.DateTimeField(auto_now_add=True, null=True)
 
     def __str__(self):
         return self.name
