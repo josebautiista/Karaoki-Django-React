@@ -15,8 +15,10 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
       setIsAuthenticated(result);
     };
 
-    verifyAuth();
-  }, []);
+    if (isAuthenticated === null) {
+      verifyAuth();
+    }
+  }, [isAuthenticated]);
 
   if (isAuthenticated === null) {
     return (

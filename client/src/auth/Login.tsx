@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { CiLock, CiUser } from "react-icons/ci";
 import { api } from "../config/axiosConfig";
 import { Input } from "../atoms/Input";
+import { check } from "./check";
 
 export const Login = () => {
   const [username, setUsername] = useState<string>("");
@@ -17,7 +18,7 @@ export const Login = () => {
         password,
       });
       localStorage.setItem("token", response.data.access);
-      navigate("/");
+      navigate("/admin");
     } catch (error) {
       console.error("Error logging in:", error);
     }
@@ -27,20 +28,37 @@ export const Login = () => {
     setUsername(e.target.value);
   };
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    const name = localStorage.getItem("nameKaraoki");
-
-    if (token) {
-      navigate("/admin");
-    } else if (name) {
-      navigate("/songs");
-    }
-  }, [navigate]);
-
   const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
   };
+
+  useEffect(() => {
+    const checkToken = async () => {
+      const token = localStorage.getItem("token");
+      const name = localStorage.getItem("nameKaraoki");
+
+      if (token) {
+        try {
+          const response = await check();
+          if (!response) {
+            localStorage.removeItem("token");
+          } else {
+            navigate("/admin");
+          }
+        } catch (error) {
+          console.error(
+            "Token inválido o expirado, permaneciendo en login:",
+            error
+          );
+          localStorage.removeItem("token");
+        }
+      } else if (name) {
+        navigate("/songs");
+      }
+    };
+
+    checkToken();
+  }, [navigate]);
 
   return (
     <div className="flex justify-center items-center h-screen bg-gray-50 px-5">

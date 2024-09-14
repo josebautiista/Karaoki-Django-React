@@ -15,6 +15,7 @@ export const check = async (): Promise<boolean> => {
       return false;
     }
   } catch {
+    window.location.href = "/login";
     return false;
   }
 };
