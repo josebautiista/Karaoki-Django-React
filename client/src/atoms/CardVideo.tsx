@@ -1,12 +1,42 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Video } from "../Types/VideoResponse";
+import { IoIosAddCircle } from "react-icons/io";
+import { api } from "../config/axiosConfig";
+import { AppContext, AppContextType } from "../context/AppProvider";
 
 interface CardVideoProps {
   video: Video;
 }
 
 export const CardVideo: React.FC<CardVideoProps> = ({ video }) => {
-  const addVideo = () => {};
+  const { idMesa, empresaId } = useContext(AppContext) as AppContextType;
+
+  const addVideo = () => {
+    const user = localStorage.getItem("user");
+    const userData = user ? JSON.parse(user) : null;
+    const videoData = {
+      video: {
+        id: video.id,
+        title: video.title,
+        thumbnail: video.thumbnail,
+        duration: video.duration,
+        url: video.url,
+      },
+      mesa_id: idMesa,
+      user_id: userData?.id,
+      empresa_id: empresaId,
+    };
+
+    api
+      .put(`playlist/update/${idMesa}/`, videoData)
+      .then(() => {
+        alert("Video added successfully!");
+      })
+      .catch(() => {
+        alert("Failed to add video");
+      });
+  };
+
   return (
     <li
       key={video.id}
@@ -31,13 +61,11 @@ export const CardVideo: React.FC<CardVideoProps> = ({ video }) => {
             {video.duration}
           </span>
         </div>
-        <button
-          onClick={addVideo}
-          className="ml-4 bg-green-500 text-white text-3xl py-1 px-2 rounded hover:bg-green-600 transition duration-200"
-        >
-          +
-        </button>
       </a>
+      <IoIosAddCircle
+        className="text-red-500 text-3xl w-10 h-10 cursor-pointer"
+        onClick={addVideo}
+      />
     </li>
   );
 };

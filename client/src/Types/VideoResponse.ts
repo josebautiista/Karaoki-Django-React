@@ -34,3 +34,25 @@ export interface Video {
   duration: string;
   url: string;
 }
+
+interface User {
+  id: number;
+  name: string;
+}
+
+export interface Song {
+  youtube_id: string;
+  title: string;
+  duration: string;
+  url: string;
+  thumbnail: string;
+}
+
+export interface Table {
+  id: number;
+  table_number: number;
+  max_songs: number;
+  users: User[];
+  songs: Song[];
+  estado: boolean;
+}

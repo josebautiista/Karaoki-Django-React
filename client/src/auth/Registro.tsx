@@ -42,7 +42,6 @@ export const Registro = () => {
           empresa_id: 1,
         })
         .then((response) => {
-          console.log(response);
           localStorage.setItem("token", response.data.access);
           navigate("/");
         })
@@ -56,7 +55,7 @@ export const Registro = () => {
   };
 
   return (
-    <div className="flex justify-center min-h-screen items-center py-10 px-5 bg-gray-100">
+    <div className="flex justify-center min-h-screen items-center py-10 px-5">
       {alert && (
         <Message
           message="Hubo un error al registrar el usuario. Por favor, intenta de nuevo."
@@ -132,7 +131,7 @@ export const Registro = () => {
           </div>
           <button
             type="submit"
-            className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 mt-3"
+            className="w-full bg-red-600 text-white py-2 rounded hover:bg-red-700 mt-3"
           >
             Registrar
           </button>

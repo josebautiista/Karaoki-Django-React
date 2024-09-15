@@ -1,43 +1,54 @@
 import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from .models import User
+from user.models import User
 from table.models import Table
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework import status
+from playlist.models import Playlist
+from empresa.models import Empresa
 
 @csrf_exempt
 def create(request):
     if request.method == 'POST':
+        data = json.loads(request.body)
+        name = data.get('name')
+        table_id = data.get('table_id')
+        empresa_id = data.get('empresa_id')
+
         try:
-            data = json.loads(request.body)
-            name = data.get('name')
-            table_id = data.get('table_id')
+            table = Table.objects.get(id=table_id)
+            empresa = Empresa.objects.get(id=empresa_id)
 
-            if not name or not table_id:
-                return JsonResponse({'error': 'Missing name or table_id'}, status=400)
+            user = User.objects.create(
+                name=name,
+                table=table
+            )
 
-            try:
-                table = Table.objects.get(id=table_id)
-            except Table.DoesNotExist:
-                table = Table(id=table_id, table_number=table_id, max_songs=10)
-                table.save()
+            playlist = Playlist.objects.create(
+                name=f'Playlist for {user.name}',
+                table=table,
+                empresa=empresa,
+                user=user
+            )
 
-            user = User(name=name, table=table)
-            user.save()
-            print(user)
+            response_data = {
+                'user': {
+                    'id': user.id,
+                    'name': user.name,
+                },
+            }
 
-            return JsonResponse({'status': 'User created'}, status=201)
-
-        except json.JSONDecodeError:
-            return JsonResponse({'error': 'Invalid JSON'}, status=400)
+            return JsonResponse(response_data)
+        
         except Exception as e:
-            return JsonResponse({'error': str(e)}, status=500)
+            return JsonResponse({'status': 'error', 'message': str(e)})
 
-    return JsonResponse({'error': 'Only POST method allowed'}, status=405)
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+
 
 def getAll(request):
     users = User.objects.all()

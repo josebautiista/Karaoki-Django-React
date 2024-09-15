@@ -18,7 +18,17 @@ export const Login = () => {
         password,
       });
       localStorage.setItem("token", response.data.access);
-      navigate("/admin");
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          username: response.data.username,
+          email: response.data.email,
+          estado: response.data.estado,
+        })
+      );
+
+      localStorage.setItem("empresa", JSON.stringify(response.data.empresa));
+      window.location.href = "/admin";
     } catch (error) {
       console.error("Error logging in:", error);
     }
@@ -61,7 +71,7 @@ export const Login = () => {
   }, [navigate]);
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-50 px-5">
+    <div className="flex justify-center items-center h-screen px-5">
       <div className="w-full max-w-sm p-8 bg-white shadow-lg rounded-lg">
         <h2 className="text-2xl font-bold mb-4 text-center">Iniciar Sesión</h2>
 
@@ -85,7 +95,7 @@ export const Login = () => {
           />
           <button
             type="submit"
-            className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700"
+            className="w-full bg-red-600 text-white py-2 rounded hover:bg-red-700"
           >
             Iniciar Sesión
           </button>

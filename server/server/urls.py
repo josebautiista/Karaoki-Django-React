@@ -8,6 +8,7 @@ from administrator.views import CustomTokenObtainPairView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('administrator/', include('administrator.urls')),
+    path('empresa/', include('empresa.urls')),
     path('user/', include('user.urls')),
     path('song/', include('song.urls')),
     path('table/', include('table.urls')),
