@@ -4,6 +4,7 @@ import { QRCodeSVG } from "qrcode.react";
 import html2canvas from "html2canvas";
 import { FaDownload } from "react-icons/fa";
 import { urlClient } from "../../config/axiosConfig";
+import { encodeBase64 } from "../../utils/encodeDecode";
 
 export const Tables = () => {
   const [tables, setTables] = useState(
@@ -33,8 +34,6 @@ export const Tables = () => {
       link.click();
     });
   };
-
-  const encodeBase64 = (num: number) => btoa(num.toString());
 
   return (
     <div className="bg-white p-4 rounded shadow-md">

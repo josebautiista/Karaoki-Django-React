@@ -10,7 +10,9 @@ export default function Dashboard() {
 
   return (
     <div className="container mx-auto p-4 space-y-6">
-      <h1 className="text-2xl font-bold mb-4">Panel de Administrador</h1>
+      <h1 className="text-2xl font-bold mb-4 text-white">
+        Panel de Administrador
+      </h1>
 
       <div className="flex space-x-4 bg-gray-100 rounded-md p-2 overflow-auto">
         {Object.values(TabNames).map((tabName) => (

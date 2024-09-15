@@ -19,7 +19,6 @@ class RegisterView(generics.CreateAPIView):
 
         return Response({
             'message': 'Administrator and user created successfully',
-            # Añadir tokens si es necesario
         }, status=status.HTTP_201_CREATED)
 
 
@@ -35,7 +34,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
             'refresh': str(data['refresh']),
             'username': data['username'],
             'email': data['email'],
-            'empresa': data.get('empresa', ''),  # Maneja el caso en que `empresa` pueda no estar
-            'estado': data.get('estado', ''),  # Maneja el caso en que `estado` pueda no estar
+            'empresa': data.get('empresa', ''),
+            'estado': data.get('estado', ''), 
         }
         return Response(response_data, status=status.HTTP_200_OK)

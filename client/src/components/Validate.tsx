@@ -2,18 +2,20 @@ import { useEffect, useContext } from "react";
 import { Navigate, useParams } from "react-router-dom";
 import { QRScan } from "../pages/QRScan";
 import { AppContext, AppContextType } from "../context/AppProvider";
+import { decodeBase64 } from "../utils/encodeDecode";
 
 export const Validate = () => {
-  const { setIdMesa } = useContext(AppContext) as AppContextType;
-  const { id } = useParams();
-  const decodeBase64 = (str: string) => parseInt(atob(str), 10);
+  const { setIdMesa, setEmpresaId } = useContext(AppContext) as AppContextType;
+  const { id, empresa } = useParams();
 
   useEffect(() => {
-    console.log("id", id);
     if (id) {
+      localStorage.setItem("idMesa", id);
+      localStorage.setItem("empresaId", empresa!);
       setIdMesa(Number(decodeBase64(id)));
+      setEmpresaId(Number(decodeBase64(empresa!)));
     }
-  }, [id, setIdMesa]);
+  }, [id, setIdMesa, setEmpresaId, empresa]);
 
   if (id) {
     return <Navigate to="/loginUser" />;

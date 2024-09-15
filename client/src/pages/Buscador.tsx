@@ -15,6 +15,19 @@ export const Buscador: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
+    const verifyLog = () => {
+      if (localStorage.getItem("nameKaraoki")) {
+        return true;
+      } else {
+        return false;
+      }
+    };
+    if (!verifyLog()) {
+      window.location.href = "/loginUser";
+    }
+  }, []);
+
+  useEffect(() => {
     const handler = setTimeout(() => {
       if (query.length < 3) {
         setVideos([]);
@@ -48,7 +61,6 @@ export const Buscador: React.FC = () => {
           },
         });
 
-        console.log(searchResponse);
         const searchItems: SearchResponseItem[] = searchResponse.data.items;
         const videoIds = searchItems.map((item) => item.id.videoId);
 
@@ -67,7 +79,6 @@ export const Buscador: React.FC = () => {
           const title = item.snippet.title;
           const thumbnail = item.snippet.thumbnails.high.url;
           const url = `https://www.youtube.com/watch?v=${item.id}`;
-          console.log(duration);
 
           return {
             id: item.id,
@@ -101,10 +112,10 @@ export const Buscador: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center p-4">
-      <h1 className="text-2xl font-bold mb-4">Busca tu canción!</h1>
+      <h1 className="text-2xl font-bold mb-4 text-white">Busca tu canción!</h1>
       <input
         type="text"
-        className="p-2 w-full max-w-lg border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:border-blue-400 focus:ring focus:ring-blue-200"
+        className="p-2 w-full max-w-lg border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:border-red-400 focus:ring focus:ring-red-200"
         placeholder="Escribe una canción o artista..."
         value={query}
         onChange={handleChange}
@@ -127,7 +138,7 @@ export const Buscador: React.FC = () => {
       )}
 
       {!loading && videos.length === 0 && (
-        <p className="text-gray-500 mt-4">No se encontraron resultados.</p>
+        <p className="text-gray-100 mt-4">No se encontraron resultados.</p>
       )}
     </div>
   );

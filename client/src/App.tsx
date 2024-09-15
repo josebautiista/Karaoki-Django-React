@@ -18,7 +18,7 @@ function App() {
           <Route path="/" element={<QRScan />} />
           <Route path="/loginUser" element={<LoginUser />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/:id?" element={<Validate />} />
+          <Route path="/:id?/:empresa?" element={<Validate />} />
           <Route path="/songs" element={<Buscador />} />
           <Route
             path="/admin"
