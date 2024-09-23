@@ -10,6 +10,8 @@ export type AppContextType = {
   setEmpresa: React.Dispatch<React.SetStateAction<Empresa | null>>;
   empresaId: number | null;
   setEmpresaId: React.Dispatch<React.SetStateAction<number | null>>;
+  maxFetch: number;
+  setMaxFetch: React.Dispatch<React.SetStateAction<number>>;
 };
 
 export const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -36,6 +38,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [empresaId, setEmpresaId] = useState<number | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [empresa, setEmpresa] = useState<Empresa | null>(null);
+  const [maxFetch, setMaxFetch] = useState<number>(0);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -76,6 +79,8 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         setEmpresa,
         empresaId,
         setEmpresaId,
+        maxFetch,
+        setMaxFetch,
       }}
     >
       {children}

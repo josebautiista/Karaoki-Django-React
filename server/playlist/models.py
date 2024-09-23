@@ -15,11 +15,12 @@ class Playlist(models.Model):
     def __str__(self):
         return self.name
 
-# Modelo intermedio
 class PlaylistSong(models.Model):
     playlist = models.ForeignKey(Playlist, on_delete=models.CASCADE)
     song = models.ForeignKey(Song, on_delete=models.CASCADE)
     fecha_agregado = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    play = models.BooleanField(default=True)
 
     class Meta:
         unique_together = ('playlist', 'song')

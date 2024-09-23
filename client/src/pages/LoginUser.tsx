@@ -5,7 +5,9 @@ import { api } from "../config/axiosConfig";
 
 export const LoginUser: React.FC = () => {
   const [name, setName] = useState<string>("");
-  const { idMesa, empresaId } = useContext(AppContext) as AppContextType;
+  const { idMesa, empresaId, setUser } = useContext(
+    AppContext
+  ) as AppContextType;
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -29,6 +31,7 @@ export const LoginUser: React.FC = () => {
         })
         .then((response) => {
           localStorage.setItem("nameKaraoki", name);
+          setUser(response.data.user);
           localStorage.setItem("user", JSON.stringify(response.data.user));
           navigate("/songs");
         })

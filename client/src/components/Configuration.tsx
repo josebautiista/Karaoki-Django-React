@@ -1,10 +1,9 @@
 import { useContext, useEffect, useState } from "react";
-import { ModalTable } from "../ModalTable";
-import { api } from "../../config/axiosConfig";
-import { AppContext, AppContextType } from "../../context/AppProvider";
-import { Table } from "../../Types/VideoResponse";
+import { Table } from "../Types/VideoResponse";
+import { AppContext, AppContextType } from "../context/AppProvider";
+import { api } from "../config/axiosConfig";
+import { ModalTable } from "./ModalTable";
 
-//   id: i + 1,
 //   maxSongs: 20,
 //   isActive: true,
 //   users: [
@@ -77,6 +76,7 @@ export const Configuration = () => {
   const { empresa } = useContext(AppContext) as AppContextType;
 
   useEffect(() => {
+    console.log(selectedTable);
     if (empresa?.id) {
       const fetchTables = async () => {
         try {
@@ -89,7 +89,7 @@ export const Configuration = () => {
 
       fetchTables();
     }
-  }, [empresa]);
+  }, [empresa, selectedTable]);
 
   const handleOpenModal = (table: Table) => {
     setSelectedTable(table);
@@ -101,12 +101,52 @@ export const Configuration = () => {
     setSelectedTable(null);
   };
 
-  const handleUpdateTable = (data: { maxSongs: number; isActive: boolean }) => {
-    console.log("Actualizar mesa:", selectedTable?.id, data);
+  const handleUpdateTable = (data: {
+    max_songs: number;
+    isActive: boolean;
+  }) => {
+    if (!selectedTable) return;
+
+    api
+      .put(`table/update/${selectedTable.id}/`, data)
+      .then((response) => {
+        const updatedTable = { ...selectedTable, ...response.data };
+        setSelectedTable(updatedTable);
+        setTables((prevTables) =>
+          prevTables.map((table) =>
+            table.id === updatedTable.id ? updatedTable : table
+          )
+        );
+      })
+      .catch((error) => {
+        console.error("Error updating table:", error);
+      });
   };
 
   const handleRemoveUser = (userId: number) => {
-    console.log("Eliminar usuario:", userId);
+    api
+      .delete(`user/delete/${userId}/`)
+      .then(() => {
+        if (selectedTable) {
+          const updatedUsers = selectedTable.users.filter(
+            (user) => user.id !== userId
+          );
+          setSelectedTable({
+            ...selectedTable,
+            users: updatedUsers,
+          });
+          setTables((prevTables) =>
+            prevTables.map((table) =>
+              table.id === selectedTable.id
+                ? { ...table, users: updatedUsers }
+                : table
+            )
+          );
+        }
+      })
+      .catch((error) => {
+        console.error("Error deleting user:", error);
+      });
   };
 
   return (

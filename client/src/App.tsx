@@ -9,6 +9,7 @@ import Dashboard from "./components/Dashboard";
 import { Login } from "./auth/Login";
 import { Registro } from "./auth/Registro";
 import { Buscador } from "./pages/Buscador";
+import { Player } from "./pages/Player";
 
 function App() {
   return (
@@ -25,6 +26,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/player"
+            element={
+              <ProtectedRoute>
+                <Player />
               </ProtectedRoute>
             }
           />
