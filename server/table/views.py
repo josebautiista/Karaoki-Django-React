@@ -5,6 +5,8 @@ from user.models import User
 from empresa.models import Empresa
 from playlist.models import Playlist
 from table.models import Table
+from table.serializers import TableSerializer
+from user.models import User
 
 @api_view(['GET'])
 def getAll(request, id):
@@ -49,5 +51,37 @@ def getAll(request, id):
     
     except Empresa.DoesNotExist:
         return Response({'message': 'Empresa not found'}, status=404)
+    except Exception as e:
+        return Response({'error': str(e)}, status=500)
+    
+@api_view(['GET'])
+def getOne(request, id):
+    try:
+        table = Table.objects.get(id=id)
+        serializer = TableSerializer(table)
+        cantidad_usuarios = User.objects.filter(table=table).count()
+        response_data = serializer.data
+        response_data['cantidad_usuarios'] = cantidad_usuarios
+
+        return Response(response_data, status=200)
+    except Table.DoesNotExist:
+        return Response({'message': 'Table not found'}, status=404)
+    except Exception as e:
+        return Response({'error': str(e)}, status=500)
+    
+@api_view(['PUT'])
+def update(request, id):
+    try:
+        table = Table.objects.get(id=id)
+        max_songs = request.data.get('max_songs')
+        
+        if max_songs is not None:
+            table.max_songs = max_songs
+            table.save()
+            return Response({'max_songs': table.max_songs}, status=200)
+        else:
+            return Response({'message': 'No max_songs provided'}, status=400)
+    except Table.DoesNotExist:
+        return Response({'message': 'Table not found'}, status=404)
     except Exception as e:
         return Response({'error': str(e)}, status=500)

@@ -33,9 +33,13 @@ export interface Video {
   thumbnail: string;
   duration: string;
   url: string;
+  youtube_id?: string;
+  user_name?: string;
+  fecha_agregado?: string | number | Date;
+  table_id?: number;
 }
 
-interface User {
+export interface User {
   id: number;
   name: string;
 }
@@ -53,6 +57,6 @@ export interface Table {
   table_number: number;
   max_songs: number;
   users: User[];
-  songs: Song[];
+  songs: Video[];
   estado: boolean;
 }
