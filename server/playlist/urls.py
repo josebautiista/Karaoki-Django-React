@@ -8,4 +8,5 @@ urlpatterns = [
     path('getPlaylist/', views.getPlaylist, name='getPlaylist'),
     path('getUser/<int:id>/', views.getSongsByUser, name='getSongsByUser'),
     path('updateState/<str:id>/', views.updateState, name='update'),
+    path('delete/<str:video_id>/<int:user_id>/', views.delete, name='playlist-delete'),
 ]

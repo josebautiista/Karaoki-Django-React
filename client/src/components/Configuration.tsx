@@ -4,71 +4,6 @@ import { AppContext, AppContextType } from "../context/AppProvider";
 import { api } from "../config/axiosConfig";
 import { ModalTable } from "./ModalTable";
 
-//   maxSongs: 20,
-//   isActive: true,
-//   users: [
-//     { id: 1, name: `User ${i * 2 + 1}` },
-//     { id: 2, name: `User ${i * 2 + 2}` },
-//   ],
-//   songs: [
-//     {
-//       id: 1,
-//       title: `Song ${i * 2 + 1}`,
-//       thumbnail: "http://example.com",
-//       duration: "02:30",
-//       url: "http://example.com",
-//     },
-//     {
-//       id: 2,
-//       title: `Song ${i * 2 + 2}`,
-//       thumbnail: "http://example.com",
-//       duration: "02:30",
-//       url: "http://example.com",
-//     },
-//     {
-//       id: 2,
-//       title: `Song ${i * 2 + 2}`,
-//       thumbnail: "http://example.com",
-//       duration: "02:30",
-//       url: "http://example.com",
-//     },
-//     {
-//       id: 2,
-//       title: `Song ${i * 2 + 2}`,
-//       thumbnail: "http://example.com",
-//       duration: "02:30",
-//       url: "http://example.com",
-//     },
-//     {
-//       id: 2,
-//       title: `Song ${i * 2 + 2}`,
-//       thumbnail: "http://example.com",
-//       duration: "02:30",
-//       url: "http://example.com",
-//     },
-//     {
-//       id: 2,
-//       title: `Song ${i * 2 + 2}`,
-//       thumbnail: "http://example.com",
-//       duration: "02:30",
-//       url: "http://example.com",
-//     },
-//     {
-//       id: 2,
-//       title: `Song ${i * 2 + 2}`,
-//       thumbnail: "http://example.com",
-//       duration: "02:30",
-//       url: "http://example.com",
-//     },
-//     {
-//       id: 2,
-//       title: `Song ${i * 2 + 2}`,
-//       thumbnail: "http://example.com",
-//       duration: "02:30",
-//       url: "http://example.com",
-//     },
-//   ],
-// }));
 export const Configuration = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTable, setSelectedTable] = useState<Table | null>(null);
@@ -76,7 +11,6 @@ export const Configuration = () => {
   const { empresa } = useContext(AppContext) as AppContextType;
 
   useEffect(() => {
-    console.log(selectedTable);
     if (empresa?.id) {
       const fetchTables = async () => {
         try {

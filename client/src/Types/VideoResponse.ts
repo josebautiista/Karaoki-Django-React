@@ -28,7 +28,6 @@ export interface DetailsResponseItem {
 }
 
 export interface Video {
-  id: string;
   title: string;
   thumbnail: string;
   duration: string;

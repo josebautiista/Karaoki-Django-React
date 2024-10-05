@@ -19,7 +19,6 @@ export const Player: React.FC = () => {
         const response = await api.post("/playlist/getPlaylist/", {
           empresa_id: empresa?.id,
         });
-        console.log(response.data);
         setPlaylist(response.data);
         if (response.data.length > 0) {
           setVideoUrl(response.data[0]?.url || "");

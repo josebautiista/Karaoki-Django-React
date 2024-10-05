@@ -12,6 +12,7 @@ from rest_framework.decorators import api_view
 import json
 from rest_framework.response import Response
 from user.models import User
+from rest_framework import status
 
 @require_http_methods(["GET"])
 def getAll(request, id):
@@ -105,7 +106,7 @@ def getPlaylist(request):
         playlists = Playlist.objects.filter(**filters).distinct()
         
         if not playlists.exists():
-            return Response({'status': 'error', 'message': 'No playlists found'}, status=404)
+            return Response([], status=200)  # Devuelve un array vacío si no hay playlists
         
         songs_data = []
         mesa_songs = {}
@@ -131,10 +132,14 @@ def getPlaylist(request):
                     'table_id': mesa_id
                 })
 
+        if not mesa_songs:
+            return Response([], status=200)
+
         for mesa in mesa_songs.values():
             mesa.sort(key=lambda x: x['fecha_agregado'])
 
-        max_length = max(len(songs) for songs in mesa_songs.values())
+        max_length = max((len(songs) for songs in mesa_songs.values()), default=0)
+        
         for i in range(max_length):
             for mesa_id, songs in mesa_songs.items():
                 if i < len(songs):
@@ -146,8 +151,6 @@ def getPlaylist(request):
         return Response({'error': str(e)}, status=500)
 
 
-
-    
 @api_view(['GET'])
 def getSongsByUser(request, id):
     try:
@@ -174,3 +177,14 @@ def updateState(request, id):
         return Response({'play': True}, status=200)
     except Exception as e:
         return Response({'error': str(e)}, status=500)
+    
+@api_view(['DELETE'])
+def delete(request, video_id, user_id):
+    try:
+        ps = PlaylistSong.objects.get(song=video_id, user=user_id)
+        print("song", ps)
+        ps.delete()
+
+        return Response({'status': 'deleted'}, status=status.HTTP_200_OK)
+    except PlaylistSong.DoesNotExist:
+        return Response({'error': 'PlaylistSong not found'}, status=status.HTTP_404_NOT_FOUND)

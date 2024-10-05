@@ -101,7 +101,7 @@ export const Buscador: React.FC = () => {
           const url = `https://www.youtube.com/watch?v=${item.id}`;
 
           return {
-            id: item.id,
+            youtube_id: item.id,
             title,
             thumbnail,
             duration: parseDuration(duration),
@@ -193,7 +193,7 @@ export const Buscador: React.FC = () => {
         {!loading && (
           <ul className="w-full max-w-lg mt-4 space-y-4">
             {videos.map((video) => (
-              <CardVideo key={video.id} video={video} />
+              <CardVideo key={video.youtube_id} video={video} env="search" />
             ))}
           </ul>
         )}

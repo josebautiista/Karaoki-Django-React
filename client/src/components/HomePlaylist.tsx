@@ -16,16 +16,23 @@ export const HomePlaylist: React.FC = () => {
           user?.id &&
           empresaId &&
           idMesa && (
-            <Playlist idUser={user.id} idMesa={idMesa} empresaId={empresaId} />
+            <Playlist
+              idUser={user.id}
+              idMesa={idMesa}
+              empresaId={empresaId}
+              env={activeTab}
+            />
           )
         );
       case "table":
         return (
           empresaId &&
-          idMesa && <Playlist idMesa={idMesa} empresaId={empresaId} />
+          idMesa && (
+            <Playlist idMesa={idMesa} empresaId={empresaId} env={activeTab} />
+          )
         );
       case "karaoke":
-        return empresaId && <Playlist empresaId={empresaId} />;
+        return empresaId && <Playlist empresaId={empresaId} env={activeTab} />;
       default:
         return null;
     }
@@ -35,7 +42,7 @@ export const HomePlaylist: React.FC = () => {
     <div className="w-full max-w-lg mx-auto mt-6">
       <div className="flex flex-col md:flex-row justify-around border-b">
         <TabPlaylist
-          label="Canciones Personales"
+          label="Mis Canciones"
           onClick={() => setActiveTab("personal")}
           isActive={activeTab === "personal"}
         />
@@ -45,7 +52,7 @@ export const HomePlaylist: React.FC = () => {
           isActive={activeTab === "table"}
         />
         <TabPlaylist
-          label="Canciones del Karaoke"
+          label="Todas las Canciones"
           onClick={() => setActiveTab("karaoke")}
           isActive={activeTab === "karaoke"}
         />

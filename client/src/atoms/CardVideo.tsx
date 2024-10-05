@@ -3,14 +3,15 @@ import { Video } from "../Types/VideoResponse";
 import { IoIosAddCircle } from "react-icons/io";
 import { api } from "../config/axiosConfig";
 import { AppContext, AppContextType } from "../context/AppProvider";
-import { FaCheckCircle } from "react-icons/fa";
+import { FaTrash } from "react-icons/fa";
 import { Alert } from "./Alert";
 
 interface CardVideoProps {
   video: Video;
+  env: string;
 }
 
-export const CardVideo: React.FC<CardVideoProps> = ({ video }) => {
+export const CardVideo: React.FC<CardVideoProps> = ({ video, env }) => {
   const { idMesa, empresaId, user, maxFetch } = useContext(
     AppContext
   ) as AppContextType;
@@ -29,7 +30,7 @@ export const CardVideo: React.FC<CardVideoProps> = ({ video }) => {
           empresa_id: empresaId,
         });
         response.data.forEach((song: Video) => {
-          if (song.youtube_id === video.id) {
+          if (song.youtube_id === video.youtube_id) {
             setAdded(true);
           }
         });
@@ -39,7 +40,7 @@ export const CardVideo: React.FC<CardVideoProps> = ({ video }) => {
     };
 
     fetchSongs();
-  }, [empresaId, user, video.id]);
+  }, [empresaId, user, video, added]);
 
   const addVideo = async () => {
     try {
@@ -58,17 +59,16 @@ export const CardVideo: React.FC<CardVideoProps> = ({ video }) => {
       }
 
       setAdded(true);
-      const userData = JSON.parse(localStorage.getItem("user") || "{}");
       const videoData = {
         video: {
-          id: video.id,
+          id: video.youtube_id,
           title: video.title,
           thumbnail: video.thumbnail,
           duration: video.duration,
           url: video.url,
         },
         mesa_id: idMesa,
-        user_id: userData?.id,
+        user_id: user?.id,
         empresa_id: empresaId,
       };
 
@@ -86,11 +86,23 @@ export const CardVideo: React.FC<CardVideoProps> = ({ video }) => {
     }
   };
 
+  const handleDelete = async () => {
+    try {
+      const videoId = video.youtube_id;
+      const userId = user?.id;
+
+      await api.delete(`playlist/delete/${videoId}/${userId}/`);
+      setAdded(false);
+    } catch (error) {
+      console.error("Error al eliminar el video:", error);
+    }
+  };
+
   return (
     <>
       {alert && <Alert message={alert.message} type={alert.type} />}
       <li
-        key={video.id}
+        key={video.youtube_id}
         className="flex items-center p-4 bg-white rounded-lg shadow-md hover:bg-gray-50 transition duration-200"
       >
         <a
@@ -111,19 +123,28 @@ export const CardVideo: React.FC<CardVideoProps> = ({ video }) => {
             <span className="text-gray-500 text-sm text-left">
               {video.duration}
             </span>
+            {env !== "search" && (
+              <div className="text-black text-sm text-left">
+                {video.user_name}, mesa {video.table_id}
+              </div>
+            )}
           </div>
         </a>
-        {added ? (
-          <FaCheckCircle
-            className="text-green-500 text-3xl w-9 h-9 cursor-pointer"
-            onClick={() => setAdded(false)}
-          />
-        ) : (
-          <IoIosAddCircle
-            className="text-red-500 text-3xl w-10 h-10 cursor-pointer"
-            onClick={addVideo}
-          />
-        )}
+
+        {(env === "personal" || env === "search") &&
+          (added ? (
+            <FaTrash
+              className="text-red-500 cursor-pointer"
+              onClick={handleDelete}
+              size={25}
+            />
+          ) : (
+            <IoIosAddCircle
+              className="text-green-500 cursor-pointer"
+              onClick={addVideo}
+              size={25}
+            />
+          ))}
       </li>
     </>
   );
