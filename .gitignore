@@ -15,9 +15,6 @@ __pycache__/
 db.sqlite3
 /media/
 
-**/migrations/*.py
-**/migrations/*.pyc
-
 node_modules/
 build/
 dist/

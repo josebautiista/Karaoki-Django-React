@@ -98,40 +98,37 @@ export const QRScan = () => {
         </p>
       </div>
 
-      {qrOn ? (
-        <div className="relative w-4/5 md:w-3/5 lg:w-2/5 h-1/2 md:h-2/3 mb-6">
-          <video
-            ref={videoEl}
-            className="w-full h-full object-cover rounded-md shadow-lg"
-          />
+      <div className="relative w-4/5 md:w-3/5 lg:w-2/5 h-1/2 md:h-2/3 mb-6">
+        <video
+          ref={videoEl}
+          className="w-full h-full object-cover rounded-md shadow-lg"
+        />
+        <div
+          ref={qrBoxEl}
+          className="absolute inset-0 flex items-center justify-center"
+        >
           <div
-            ref={qrBoxEl}
-            className="absolute inset-0 flex items-center justify-center"
+            className={`relative w-48 h-48 md:w-64 md:h-64 border-4 ${
+              scannedResult ? "border-gray-500" : "border-white"
+            } border-dashed rounded-lg transition-colors duration-300`}
           >
-            <div
-              className={`relative w-48 h-48 md:w-64 md:h-64 border-4 ${
-                scannedResult ? "border-gray-500" : "border-white"
-              } border-dashed rounded-lg transition-colors duration-300`}
-            >
-              <AiOutlineScan className="absolute text-white w-6 h-6 md:w-8 md:h-8 top-2 left-2 animate-pulse" />
-              <AiOutlineScan className="absolute text-white w-6 h-6 md:w-8 md:h-8 top-2 right-2 rotate-90 animate-pulse" />
-              <AiOutlineScan className="absolute text-white w-6 h-6 md:w-8 md:h-8 bottom-2 left-2 -rotate-90 animate-pulse" />
-              <AiOutlineScan className="absolute text-white w-6 h-6 md:w-8 md:h-8 bottom-2 right-2 rotate-180 animate-pulse" />
-            </div>
+            <AiOutlineScan className="absolute text-white w-6 h-6 md:w-8 md:h-8 top-2 left-2 animate-pulse" />
+            <AiOutlineScan className="absolute text-white w-6 h-6 md:w-8 md:h-8 top-2 right-2 rotate-90 animate-pulse" />
+            <AiOutlineScan className="absolute text-white w-6 h-6 md:w-8 md:h-8 bottom-2 left-2 -rotate-90 animate-pulse" />
+            <AiOutlineScan className="absolute text-white w-6 h-6 md:w-8 md:h-8 bottom-2 right-2 rotate-180 animate-pulse" />
           </div>
         </div>
-      ) : (
-        <label className="flex items-center gap-2 bg-white text-black py-2 px-4 rounded-md cursor-pointer shadow-md hover:bg-red-200 transition">
-          <FiCamera className="text-xl" />
-          <span>Subir Imagen</span>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleFileChange}
-            className="hidden"
-          />
-        </label>
-      )}
+      </div>
+      <label className="flex items-center gap-2 bg-white text-black py-2 px-4 rounded-md cursor-pointer shadow-md hover:bg-red-200 transition">
+        <FiCamera className="text-xl" />
+        <span>Subir Imagen</span>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleFileChange}
+          className="hidden"
+        />
+      </label>
     </div>
   );
 };

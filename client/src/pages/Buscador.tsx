@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { SkeletonLoader } from "../atoms/Skeleton";
 import { parseDuration } from "../utils/videoDuration";
@@ -8,19 +8,24 @@ import {
   Video,
 } from "../Types/VideoResponse";
 import { CardVideo } from "../atoms/CardVideo";
+import { HomePlaylist } from "../components/HomePlaylist";
+import { IoMdClose } from "react-icons/io";
+import { AiOutlineLogout } from "react-icons/ai";
+import { AppContext, AppContextType } from "../context/AppProvider";
+import { api } from "../config/axiosConfig";
 
 export const Buscador: React.FC = () => {
   const [query, setQuery] = useState<string>("");
   const [videos, setVideos] = useState<Video[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [displayPlaylist, setDisplayPlaylist] = useState<boolean>(true);
+  const { idMesa, setMaxFetch, user } = useContext(
+    AppContext
+  ) as AppContextType;
 
   useEffect(() => {
     const verifyLog = () => {
-      if (localStorage.getItem("nameKaraoki")) {
-        return true;
-      } else {
-        return false;
-      }
+      return !!localStorage.getItem("nameKaraoki");
     };
     if (!verifyLog()) {
       window.location.href = "/loginUser";
@@ -43,6 +48,21 @@ export const Buscador: React.FC = () => {
   const API_URL = "https://www.googleapis.com/youtube/v3/search";
   const VIDEO_DETAILS_URL = "https://www.googleapis.com/youtube/v3/videos";
   const maxResults = 10;
+
+  useEffect(() => {
+    if (!idMesa) return;
+    const fetchEmpresa = async () => {
+      try {
+        const response = await api.get(`/table/getOne/${idMesa}`);
+        const { cantidad_usuarios, max_songs } = response.data;
+        setMaxFetch(Math.floor(max_songs / cantidad_usuarios));
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchEmpresa();
+  }, [idMesa, setMaxFetch]);
 
   useEffect(() => {
     const fetchVideos = async () => {
@@ -81,7 +101,7 @@ export const Buscador: React.FC = () => {
           const url = `https://www.youtube.com/watch?v=${item.id}`;
 
           return {
-            id: item.id,
+            youtube_id: item.id,
             title,
             thumbnail,
             duration: parseDuration(duration),
@@ -105,41 +125,85 @@ export const Buscador: React.FC = () => {
     return () => clearTimeout(timeoutId);
   }, [query]);
 
+  useEffect(() => {
+    if (!loading && videos.length === 0) {
+      setDisplayPlaylist(true);
+    }
+  }, [loading, videos]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setDisplayPlaylist(false);
     setLoading(true);
     setQuery(e.target.value);
   };
 
+  const clearInput = () => {
+    setQuery("");
+    setDisplayPlaylist(true);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("empresaId");
+    localStorage.removeItem("idMesa");
+    localStorage.removeItem("nameKaraoki");
+    localStorage.removeItem("user");
+    window.location.href = "/loginUser";
+    api.delete(`user/delete/${user?.id}/`);
+  };
+
   return (
-    <div className="flex flex-col items-center p-4">
-      <h1 className="text-2xl font-bold mb-4 text-white">Busca tu canción!</h1>
-      <input
-        type="text"
-        className="p-2 w-full max-w-lg border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:border-red-400 focus:ring focus:ring-red-200"
-        placeholder="Escribe una canción o artista..."
-        value={query}
-        onChange={handleChange}
-      />
+    <div className="w-full flex items-center justify-center">
+      <div className="flex flex-col items-center h-full justify-center min-h-screen relative w-full max-w-lg px-4 py-14">
+        <h1 className="text-2xl font-bold mb-4 text-white">
+          Busca tu canción!
+        </h1>
 
-      {loading && (
-        <div className="w-full max-w-lg mt-4 space-y-4">
-          {[...Array(maxResults)].map((_, index) => (
-            <SkeletonLoader key={index} />
-          ))}
+        <button
+          className="absolute top-4 right-4 p-2 text-white rounded flex items-center justify-center gap-1"
+          onClick={handleLogout}
+        >
+          Logout <AiOutlineLogout size={20} />
+        </button>
+
+        <div className="relative w-full max-w-lg">
+          <input
+            type="text"
+            className="p-2 w-full border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:border-red-400 focus:ring focus:ring-red-200"
+            placeholder="Escribe una canción o artista..."
+            value={query}
+            onChange={handleChange}
+          />
+          {query && (
+            <IoMdClose
+              className="absolute right-2 top-2.5 text-red-700 cursor-pointer"
+              size={20}
+              onClick={clearInput}
+            />
+          )}
         </div>
-      )}
 
-      {!loading && (
-        <ul className="w-full max-w-lg mt-4 space-y-4">
-          {videos.map((video) => (
-            <CardVideo key={video.id} video={video} />
-          ))}
-        </ul>
-      )}
+        {loading && (
+          <div className="w-full max-w-lg mt-4 space-y-4">
+            {[...Array(maxResults)].map((_, index) => (
+              <SkeletonLoader key={index} />
+            ))}
+          </div>
+        )}
 
-      {!loading && videos.length === 0 && (
-        <p className="text-gray-100 mt-4">No se encontraron resultados.</p>
-      )}
+        {!loading && (
+          <ul className="w-full max-w-lg mt-4 space-y-4">
+            {videos.map((video) => (
+              <CardVideo key={video.youtube_id} video={video} env="search" />
+            ))}
+          </ul>
+        )}
+
+        {!loading && videos.length === 0 && (
+          <p className="text-gray-100 mt-4">No se encontraron resultados.</p>
+        )}
+
+        {displayPlaylist && <HomePlaylist />}
+      </div>
     </div>
   );
 };

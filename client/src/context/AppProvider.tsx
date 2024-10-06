@@ -1,5 +1,6 @@
 import React, { createContext, useState, ReactNode, useEffect } from "react";
 import { decodeBase64 } from "../utils/encodeDecode";
+import { User } from "../Types/VideoResponse";
 
 export type AppContextType = {
   idMesa: number | null;
@@ -10,19 +11,16 @@ export type AppContextType = {
   setEmpresa: React.Dispatch<React.SetStateAction<Empresa | null>>;
   empresaId: number | null;
   setEmpresaId: React.Dispatch<React.SetStateAction<number | null>>;
+  maxFetch: number;
+  setMaxFetch: React.Dispatch<React.SetStateAction<number>>;
+  revalidate: boolean;
+  setRevalidate: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export const AppContext = createContext<AppContextType | undefined>(undefined);
 
 interface AppProviderProps {
   children: ReactNode;
-}
-
-interface User {
-  id: number;
-  username: string;
-  email: string;
-  estado: boolean;
 }
 
 interface Empresa {
@@ -36,6 +34,19 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [empresaId, setEmpresaId] = useState<number | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [empresa, setEmpresa] = useState<Empresa | null>(null);
+  const [maxFetch, setMaxFetch] = useState<number>(0);
+  const [revalidate, setRevalidate] = useState<boolean>(false);
+  const interval = 60000;
+
+  useEffect(() => {
+    const toggleRevalidate = () => {
+      setRevalidate((x) => !x);
+    };
+
+    const intervalId = setInterval(toggleRevalidate, interval);
+
+    return () => clearInterval(intervalId);
+  }, [revalidate]);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -76,6 +87,10 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         setEmpresa,
         empresaId,
         setEmpresaId,
+        maxFetch,
+        setMaxFetch,
+        revalidate,
+        setRevalidate,
       }}
     >
       {children}

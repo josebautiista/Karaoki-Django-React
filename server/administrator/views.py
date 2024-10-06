@@ -29,6 +29,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
+        print(data)
         response_data = {
             'access': str(data['access']),
             'refresh': str(data['refresh']),
@@ -36,5 +37,6 @@ class CustomTokenObtainPairView(TokenObtainPairView):
             'email': data['email'],
             'empresa': data.get('empresa', ''),
             'estado': data.get('estado', ''), 
+            'is_superuser': data['is_superuser'],
         }
         return Response(response_data, status=status.HTTP_200_OK)
