@@ -2,17 +2,12 @@ import React, { useContext, useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { urlClient } from "../config/axiosConfig";
 import { CardVideo } from "../atoms/CardVideo";
-import { Video } from "../Types/VideoResponse";
+import { User, Video } from "../Types/VideoResponse";
 import { AppContext, AppContextType } from "../context/AppProvider";
 import { FaDownload } from "react-icons/fa6";
 import html2canvas from "html2canvas";
 import { encodeBase64 } from "../utils/encodeDecode";
 import { MdDelete } from "react-icons/md";
-
-interface User {
-  id: number;
-  name: string;
-}
 
 interface TableConfigModalProps {
   isOpen: boolean;
@@ -41,8 +36,7 @@ export const ModalTable: React.FC<TableConfigModalProps> = ({
     maxSongs
   );
   const [currentIsActive, setCurrentIsActive] = useState(isActive);
-  const { empresa } = useContext(AppContext) as AppContextType;
-
+  const { empresa, setRevalidate } = useContext(AppContext) as AppContextType;
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [userToDelete, setUserToDelete] = useState<number | null>(null);
 
@@ -65,6 +59,7 @@ export const ModalTable: React.FC<TableConfigModalProps> = ({
   };
 
   const handleDeleteUser = (userId: number) => {
+    setRevalidate((x) => !x);
     setUserToDelete(userId);
     setShowConfirmDelete(true);
   };
@@ -218,7 +213,7 @@ export const ModalTable: React.FC<TableConfigModalProps> = ({
             <h3 className="text-lg font-semibold mb-4">Playlist</h3>
             <div className="flex flex-col space-y-4">
               {songs.map((song, i) => (
-                <CardVideo key={i} video={song} />
+                <CardVideo key={i} video={song} env="admin" />
               ))}
             </div>
           </div>

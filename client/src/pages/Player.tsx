@@ -29,6 +29,11 @@ export const Player: React.FC = () => {
     };
 
     fetchPlaylist();
+
+    const intervalId = setInterval(() => {
+      fetchPlaylist();
+    }, 60000);
+    return () => clearInterval(intervalId);
   }, [empresa, changed]);
 
   const handleVideoEnd = () => {

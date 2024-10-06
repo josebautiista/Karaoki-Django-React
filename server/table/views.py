@@ -29,6 +29,7 @@ def getAll(request, id):
             songs_data = []
             for playlist in playlists:
                 songs = playlist.songs.all()
+                user = playlist.user
                 for song in songs:
                     if song.youtube_id not in [s['youtube_id'] for s in songs_data]:
                         songs_data.append({
@@ -36,7 +37,9 @@ def getAll(request, id):
                             'title': song.title,
                             'duration': song.duration,
                             'url': song.url,
-                            'thumbnail': song.thumbnail
+                            'thumbnail': song.thumbnail,
+                            'user_name': user.name,
+                            'table_id': table.id
                         })
             
             tables_data.append({

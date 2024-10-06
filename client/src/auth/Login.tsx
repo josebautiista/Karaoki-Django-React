@@ -24,6 +24,7 @@ export const Login = () => {
           username: response.data.username,
           email: response.data.email,
           estado: response.data.estado,
+          empresa: response.data.empresa,
         })
       );
 

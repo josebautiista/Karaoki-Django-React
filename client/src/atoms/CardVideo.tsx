@@ -12,7 +12,7 @@ interface CardVideoProps {
 }
 
 export const CardVideo: React.FC<CardVideoProps> = ({ video, env }) => {
-  const { idMesa, empresaId, user, maxFetch } = useContext(
+  const { idMesa, empresaId, user, maxFetch, setRevalidate } = useContext(
     AppContext
   ) as AppContextType;
   const [added, setAdded] = useState(false);
@@ -27,20 +27,19 @@ export const CardVideo: React.FC<CardVideoProps> = ({ video, env }) => {
         const response = await api.post(`/playlist/getPlaylist/`, {
           user_id: user?.id,
           table_id: null,
-          empresa_id: empresaId,
+          empresa_id: empresaId ? empresaId : user?.empresa?.id,
         });
-        response.data.forEach((song: Video) => {
-          if (song.youtube_id === video.youtube_id) {
-            setAdded(true);
-          }
-        });
+        const found = response.data.some(
+          (song: Video) => song.youtube_id === video.youtube_id
+        );
+        setAdded(found);
       } catch {
         console.log("Error fetching playlist");
       }
     };
 
     fetchSongs();
-  }, [empresaId, user, video, added]);
+  }, [empresaId, user, video]);
 
   const addVideo = async () => {
     try {
@@ -59,6 +58,7 @@ export const CardVideo: React.FC<CardVideoProps> = ({ video, env }) => {
       }
 
       setAdded(true);
+      setRevalidate((x) => !x);
       const videoData = {
         video: {
           id: video.youtube_id,
@@ -93,6 +93,7 @@ export const CardVideo: React.FC<CardVideoProps> = ({ video, env }) => {
 
       await api.delete(`playlist/delete/${videoId}/${userId}/`);
       setAdded(false);
+      setRevalidate((x) => !x);
     } catch (error) {
       console.error("Error al eliminar el video:", error);
     }

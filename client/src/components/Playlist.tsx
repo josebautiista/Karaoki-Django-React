@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { api } from "../config/axiosConfig";
 import { FaMusic } from "react-icons/fa";
 import { CardVideo } from "../atoms/CardVideo";
 import { Video } from "../Types/VideoResponse";
+import { AppContext, AppContextType } from "../context/AppProvider";
 
 interface PlaylistProps {
   idUser?: number | null;
@@ -19,6 +20,7 @@ export const Playlist: React.FC<PlaylistProps> = ({
 }) => {
   const [songs, setSongs] = useState<Video[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const { revalidate } = useContext(AppContext) as AppContextType;
 
   useEffect(() => {
     const fetchSongs = async () => {
@@ -38,7 +40,7 @@ export const Playlist: React.FC<PlaylistProps> = ({
     };
 
     fetchSongs();
-  }, [idUser, idMesa, empresaId]);
+  }, [idUser, idMesa, empresaId, revalidate]);
 
   if (loading) {
     return <div className="text-center text-white">Loading...</div>;

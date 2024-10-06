@@ -96,6 +96,7 @@ def delete(request, id):
     if request.method == 'DELETE':
         try:
             user = User.objects.get(id=id)
+            print("user", user)
             user.delete()
             return JsonResponse({'status': 'User deleted'}, status=200)
         except User.DoesNotExist:

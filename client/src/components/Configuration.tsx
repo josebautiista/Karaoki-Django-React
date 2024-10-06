@@ -8,7 +8,7 @@ export const Configuration = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTable, setSelectedTable] = useState<Table | null>(null);
   const [tables, setTables] = useState<Table[]>([]);
-  const { empresa } = useContext(AppContext) as AppContextType;
+  const { empresa, revalidate } = useContext(AppContext) as AppContextType;
 
   useEffect(() => {
     if (empresa?.id) {
@@ -23,7 +23,7 @@ export const Configuration = () => {
 
       fetchTables();
     }
-  }, [empresa, selectedTable]);
+  }, [empresa, selectedTable, revalidate]);
 
   const handleOpenModal = (table: Table) => {
     setSelectedTable(table);

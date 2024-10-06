@@ -40,7 +40,13 @@ export interface Video {
 
 export interface User {
   id: number;
-  name: string;
+  name?: string;
+  username: string;
+  email?: string;
+  estado?: boolean;
+  empresa?: {
+    id: number;
+  };
 }
 
 export interface Song {
