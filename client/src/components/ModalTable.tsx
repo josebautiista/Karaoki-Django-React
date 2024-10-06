@@ -1,6 +1,5 @@
 import React, { useContext, useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
-import { urlClient } from "../config/axiosConfig";
 import { CardVideo } from "../atoms/CardVideo";
 import { User, Video } from "../Types/VideoResponse";
 import { AppContext, AppContextType } from "../context/AppProvider";
@@ -132,9 +131,9 @@ export const ModalTable: React.FC<TableConfigModalProps> = ({
               </h3>
               <div className="flex justify-center py-2">
                 <QRCodeSVG
-                  value={`${urlClient}${encodeBase64(tableId)}/${encodeBase64(
-                    empresa?.id
-                  )}`}
+                  value={`${import.meta.env.VITE_URL_CLIENT}${encodeBase64(
+                    tableId
+                  )}/${encodeBase64(empresa?.id)}`}
                   size={200}
                 />
               </div>

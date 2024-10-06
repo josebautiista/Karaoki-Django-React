@@ -112,3 +112,10 @@ def verify_token(request):
     else:
         return Response({"message": "Invalid token"}, status=status.HTTP_401_UNAUTHORIZED)
     
+@api_view(['GET'])
+def validate(request, id):
+    try:
+        user = User.objects.get(id=id)
+        return Response({"exists": True}, status=status.HTTP_200_OK)
+    except User.DoesNotExist:
+        return Response({"exists": False}, status=status.HTTP_404_NOT_FOUND)

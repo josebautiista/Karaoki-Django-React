@@ -5,6 +5,7 @@ import { api } from "../config/axiosConfig";
 import { AppContext, AppContextType } from "../context/AppProvider";
 import { FaTrash } from "react-icons/fa";
 import { Alert } from "./Alert";
+import { AxiosError } from "axios";
 
 interface CardVideoProps {
   video: Video;
@@ -42,6 +43,27 @@ export const CardVideo: React.FC<CardVideoProps> = ({ video, env }) => {
   }, [empresaId, user, video]);
 
   const addVideo = async () => {
+    const userIsValid = await validateUser();
+    console.log("validateUser", userIsValid);
+
+    if (!userIsValid) {
+      setAlert({
+        message:
+          "Usted ha sido eliminado, para más información contáctese con el administrador",
+        type: "error",
+      });
+      localStorage.removeItem("empresaId");
+      localStorage.removeItem("idMesa");
+      localStorage.removeItem("nameKaraoki");
+      localStorage.removeItem("user");
+      setTimeout(() => {
+        setAlert(null);
+        window.location.href = "/loginUser";
+      }, 4000);
+
+      return;
+    }
+
     try {
       const response = await api.get(`playlist/getUser/${user?.id}/`);
       const cantidadCanciones = response.data.count;
@@ -83,6 +105,23 @@ export const CardVideo: React.FC<CardVideoProps> = ({ video, env }) => {
       setTimeout(() => {
         setAlert(null);
       }, 3000);
+    }
+  };
+
+  const validateUser = async (): Promise<boolean> => {
+    console.log("user", user);
+    try {
+      const { data } = await api.get(`user/validate/${user?.id}/`);
+      console.log("data", data);
+      return data.exists;
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        if (error.response?.status === 404) {
+          return false;
+        }
+      }
+      console.error("An unexpected error occurred", error);
+      return false;
     }
   };
 

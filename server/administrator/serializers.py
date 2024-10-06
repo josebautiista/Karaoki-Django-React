@@ -41,11 +41,11 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         print(vars(user))
         data['username'] = user.username
         data['email'] = user.email
+        data['is_superuser'] = user.is_superuser
         
         if hasattr(user, 'administrator'):
             empresa = user.administrator.empresa
             data['empresa'] = EmpresaSerializer(empresa).data 
             data['estado'] = user.administrator.estado
-            data['is_superuser'] = user.is_superuser
         
         return data
